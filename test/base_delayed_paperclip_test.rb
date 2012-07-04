@@ -72,6 +72,7 @@ module BaseDelayedPaperclipTest
 
   def test_post_processing_value_updated_for_reprocessing
     Paperclip::Attachment.any_instance.expects(:post_processing=).with(true)
+    Paperclip::Attachment.any_instance.expects(:post_processing=).with(false)
 
     dummy = Dummy.new(:image => File.open("#{RAILS_ROOT}/test/fixtures/12k.png"))
     dummy.save!
