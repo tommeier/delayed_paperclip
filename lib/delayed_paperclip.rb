@@ -14,6 +14,10 @@ module DelayedPaperclip
       }
     end
 
+    def options= options
+      @options = @options.merge(options.symbolize_keys!)
+    end
+
     def detect_background_task
       return DelayedPaperclip::Jobs::DelayedJob if defined? ::Delayed::Job
       return DelayedPaperclip::Jobs::Resque     if defined? ::Resque

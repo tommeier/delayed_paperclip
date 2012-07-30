@@ -3,7 +3,7 @@ require 'resque'
 module DelayedPaperclip
   module Jobs
     class Resque
-      @queue = :paperclip
+      @queue = DelayedPaperclip.options[:queue] || :paperclip
 
       def self.enqueue_delayed_paperclip(instance_klass, instance_id, attachment_name, styles_to_reprocess = [])
         ::Resque.enqueue(self, instance_klass, instance_id, attachment_name, styles_to_reprocess)
