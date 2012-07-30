@@ -36,12 +36,17 @@ module DelayedPaperclip
         @instance.send(:"#{@name}_processing?")
       end
 
-      def process_delayed!
+      def process_delayed! styles_to_reprocess
         self.job_is_processing = true
         self.post_processing = true
 
-        reprocess!
+        styles_to_reprocess.map!(&:to_sym)
 
+        fail "Attempting to reprocess unknown style(s) #{styles_to_reprocess - styles.keys}" unless (styles_to_reprocess - styles.keys).empty?
+
+        reprocess!(*( styles_to_reprocess.empty? ? styles.keys : styles_to_reprocess) )
+
+        self.post_processing = false
         self.job_is_processing = false
       end
 

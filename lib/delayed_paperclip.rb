@@ -14,6 +14,10 @@ module DelayedPaperclip
       }
     end
 
+    def options= options
+      @options = @options.merge(options.symbolize_keys!)
+    end
+
     def detect_background_task
       return DelayedPaperclip::Jobs::DelayedJob if defined? ::Delayed::Job
       return DelayedPaperclip::Jobs::Resque     if defined? ::Resque
@@ -23,14 +27,14 @@ module DelayedPaperclip
       options[:background_job_class]
     end
 
-    def enqueue(instance_klass, instance_id, attachment_name)
-      processor.enqueue_delayed_paperclip(instance_klass, instance_id, attachment_name)
+    def enqueue(instance_klass, instance_id, attachment_name, styles_to_reprocess = [] )
+      processor.enqueue_delayed_paperclip(instance_klass, instance_id, attachment_name, styles_to_reprocess)
     end
 
-    def process_job(instance_klass, instance_id, attachment_name)
+    def process_job(instance_klass, instance_id, attachment_name, styles_to_reprocess = [])
       instance_klass.constantize.find(instance_id).
         send(attachment_name).
-        process_delayed!
+        process_delayed!(styles_to_reprocess)
     end
 
   end
